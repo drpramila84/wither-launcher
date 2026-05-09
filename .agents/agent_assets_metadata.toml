@@ -1,0 +1,13 @@
+uploads = []
+
+[[generated]]
+id = "BEcsG-vvKuBcG5fnSLans"
+uri = "file://attached_assets/wither_launcher_icon.png"
+type = "image"
+title = "wither launcher icon"
+
+[[outputs]]
+id = "P0M6eJwf180dm7hNl9ExB"
+uri = "file://attached_assets/wither_launcher_icon.png"
+type = "image"
+title = "Wither Launcher App Icon"
