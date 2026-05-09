@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- App name part -->
-    <string name="app_name">PojavLauncher（适用于 Android 的《Minecraft：Java版》）</string>
+    <string name="app_name">MojoLauncher（适用于 Android 的《Minecraft：Java版》）</string>
     <string name="app_short_name">Wither Launcher</string>
     <!-- Action bar part -->
     <!-- Languages list part -->
@@ -15,7 +15,7 @@
     <!-- AlertDialog title -->
     <string name="alerttitle_installmod">选择模组安装器</string>
     <!-- Error messages -->
-    <string name="error_fatal">PojavLauncher 意外崩溃</string>
+    <string name="error_fatal">MojoLauncher 意外崩溃</string>
     <string name="error_no_version">无版本！</string>
     <string name="error_show_more">显示详情</string>
     <string name="error_show_less">隐藏细节</string>
@@ -77,7 +77,6 @@
     <string name="global_default">默认</string>
     <!-- MainActivity: strings -->
     <string name="mcn_exit_title">应用程序/游戏以代码 %d退出，请查看 latestlog.txt 了解详情；如果你不知道发生了什么，请点击 “分享日志文件” 将日志文件发送给他人分析，而不是在此页面截屏。</string>
-    <string name="mcn_signal_title">应用程序/游戏以致命信号 %d 中止，请查看 latestlog.txt 以了解更多详情。</string>
     <string name="mcn_exit_confirm">您确定要强制关闭？</string>
     <string name="mcn_check_fail_vulkan_support">此设备不支持 Zink（Vulkan）渲染器！</string>
     <!-- MainActivity: Control buttons -->
@@ -203,10 +202,8 @@
     <string name="global_delete">删除</string>
     <string name="pedit_java_runtime">Java 运行环境</string>
     <string name="pedit_renderer">渲染器</string>
-    <string name="arc_capes_title">Cosmetica 披风</string>
-    <string name="arc_capes_desc">启用来自 Cosmetica（原 Arc）的披风，需要 OptiFine，欲知详情请访问 https://arcapes.com。</string>
     <string name="notif_channel_name">常规</string>
-    <string name="lazy_service_default_title">Pojav 前台服务</string>
+    <string name="lazy_service_default_title">Mojo 前台服务</string>
     <string name="mcl_setting_veroption_installed">已安装</string>
     <string name="use_global_default">（使用全局默认设置）</string>
     <string name="default_control">默认控制键布局</string>
@@ -236,10 +233,9 @@
     <string name="preference_gyro_sample_rate_title">陀螺仪采样率</string>
     <string name="preference_gyro_sample_rate_description">如果您在陀螺仪控制上遇到性能问题，请增加此值。</string>
     <string name="microsoft_login_retry_later">您的操作过于频繁，请稍后重试。</string>
-    <string name="storage_required">PojavLauncher 需要连接外部存储，请重新连接并重启应用。</string>
+    <string name="storage_required">MojoLauncher 需要连接外部存储，请重新连接并重启应用。</string>
     <string name="mcl_setting_title_buttonallcaps">在按钮标签中仅使用大写字母</string>
     <string name="mcl_setting_subtitle_buttonallcaps">如果您想在按键中显示小写字母，请关闭此设置。</string>
-    <string name="create_profile">创建新配置</string>
     <string name="preference_shader_dump_title">启用着色器输出</string>
     <string name="preference_shader_dump_description">记录切换的着色器到日志文件中。</string>
     <string name="percent_format">%d%%</string>
@@ -269,17 +265,12 @@
     <string name="fabric_dl_game_version">Minecraft 版本</string>
     <string name="fabric_dl_install">安装</string>
     <string name="fabric_dl_cant_read_meta">读取 %s 加载器元数据失败！请稍后重试。</string>
-    <string name="modloader_dl_install_fabric">创建 Fabric 配置</string>
-    <string name="modloader_dl_install_quilt">创建 Quilt 配置</string>
-    <string name="modloader_dl_install_forge">创建 Forge 配置</string>
-    <string name="create_profile_vanilla">创建原版配置</string>
     <string name="create_profile_vanilla_like_versions">类原版版本</string>
     <string name="create_profile_modded_versions">模组加载器版本</string>
     <string name="fabric_dl_loader_title">选择版本</string>
     <string name="of_dl_select_version">选择 OptiFine 版本</string>
     <string name="of_dl_failed_to_scrape">无法收集 OptiFine 安装数据！</string>
     <string name="of_dl_progress">正在下载 %s</string>
-    <string name="create_profile_optifine">创建 OptiFine 配置</string>
     <string name="hint_search_modpack">搜索整合包</string>
     <string name="preference_vulkan_driver_system_title">使用系统 Vulkan 驱动</string>
     <string name="preference_vulkan_driver_system_description">强制启动器使用系统自带的 Vulkan 驱动而非骁龙 Adreno GPU 的 Turnip 驱动。此项设置会影响的 Zink 和调用 Vulkan 的模组。</string>
@@ -293,12 +284,11 @@
     <string name="modpack_download_downloading_mods">正在下载模组（%.2fMB / %.2fMB）</string>
     <string name="modpack_download_downloading_mods_fc">正在下载模组（文件 %d 中的 %d）</string>
     <string name="modpack_download_applying_overrides">正在覆盖文件（%d/%d）</string>
-    <string name="modpack_install_notification_title">Pojav 整合包安装器</string>
+    <string name="modpack_install_notification_title">Mojo 整合包安装器</string>
     <string name="modpack_install_notification_success">点击此处完成整合包安装</string>
     <string name="modpack_install_notification_data_not_available">模组加载器信息下载失败！</string>
     <string name="modpack_install_modloader_download_failed">模组加载器文件下载失败！</string>
     <string name="modpack_install_download_failed">整合包文件下载失败！</string>
-    <string name="modpack_install_button">创建整合包配置</string>
     <string name="notif_error_occured">发生了一个错误</string>
     <string name="notif_error_occured_desc">点击查看详请</string>
     <string name="fabric_dl_only_stable">仅显示稳定版本</string>
@@ -323,7 +313,7 @@
     <string name="preference_category_miscellaneous">其他设置</string>
     <string name="preference_category_video">视频设置</string>
     <string name="notification_permission_dialog_title">权限请求</string>
-    <string name="notification_permission_dialog_text">PojavLauncher 需要获得通知权限，以防止在您离开应用时停止游戏或模组包的下载。没有这个权限，Android 可能会在您将 PojavLauncher 置于后台模式时关闭您的下载。</string>
+    <string name="notification_permission_dialog_text">MojoLauncher 需要获得通知权限，以防止在您离开应用时停止游戏或模组包的下载。没有这个权限，Android 可能会在您将 MojoLauncher 置于后台模式时关闭您的下载。</string>
     <string name="notification_permission_toast">您可以随时进入设置来更改您的意愿</string>
     <string name="preference_ask_for_notification_title">允许通知</string>
     <string name="preference_ask_for_notification_description">请点击重新请求通知权限，以确保游戏或整合包的后台下载正常工作。</string>
@@ -375,7 +365,7 @@
     <string name="controller_remapper_expand_entry">展开以更改键码</string>
     <string name="preference_remap_controller_title">更改手柄按键绑定</string>
     <string name="preference_remap_controller_description">允许你修改绑定到每个手柄按钮的键盘按键</string>
-    <string name="mcl_button_discord">Discord</string>
+    <string name="mcl_button_social_media">Discord</string>
     <string name="ltw_render_distance_warning_msg">如果没有 Sodium 或其他类似模组，你的 GPU 将无法渲染 7 以上的渲染距离。点击“确定”后，渲染距离将自动缩短。</string>
     <string name="mcl_button_open_directory">打开游戏目录</string>
     <string name="local_login_bad_username_title">用户名不合适</string>

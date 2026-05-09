@@ -14,7 +14,7 @@
     <!-- AlertDialog title -->
     <string name="alerttitle_installmod">Seleccione un instalador de modificaciones</string>
     <!-- Error messages -->
-    <string name="error_fatal">PojavLauncher se ha detenido de forma inesperada</string>
+    <string name="error_fatal">MojoLauncher se ha detenido de forma inesperada</string>
     <string name="error_no_version">¡No hay versiones!</string>
     <string name="error_show_more">Mostrar más</string>
     <string name="error_show_less">Mostrar menos</string>
@@ -76,7 +76,6 @@
     <string name="global_default">Predeterminado</string>
     <!-- MainActivity: strings -->
     <string name="mcn_exit_title">La aplicación/juego ha finalizado con el código %d, mira el archivo latestlog.txt para más detalles.</string>
-    <string name="mcn_signal_title">La aplicación/juego ha finalizado con código %d, revise latestlog.txt para más detalles.</string>
     <string name="mcn_exit_confirm">¿Estás seguro de que quieres forzar el cierre?</string>
     <string name="mcn_check_fail_vulkan_support">¡El renderizador Zink (Vulkan) no es compatible con este dispositivo!</string>
     <!-- MainActivity: Control buttons -->
@@ -202,10 +201,8 @@
     <string name="global_delete">Eliminar</string>
     <string name="pedit_java_runtime">Java Runtime</string>
     <string name="pedit_renderer">Renderizador</string>
-    <string name="arc_capes_title">Capas de Comestica</string>
-    <string name="arc_capes_desc">Activa las capas de Cosmetica (anteriormente Arc). Para más información ve a esta página https://cosmetica.cc. Necesitas Optifine.</string>
     <string name="notif_channel_name">General</string>
-    <string name="lazy_service_default_title">Servicio de primer plano de PojavLauncher</string>
+    <string name="lazy_service_default_title">Servicio de primer plano de MojoLauncher</string>
     <string name="mcl_setting_veroption_installed">Instalada</string>
     <string name="use_global_default">(Usar predeterminado global)</string>
     <string name="default_control">Controles por defecto</string>
@@ -235,10 +232,9 @@
     <string name="preference_gyro_sample_rate_title">Tasa de muestreo del giroscopio</string>
     <string name="preference_gyro_sample_rate_description">Si tienes problemas de rendimiento con el giroscopio, sube esto.</string>
     <string name="microsoft_login_retry_later">Demasiadas solicitudes, inténtalo de nuevo más tarde.</string>
-    <string name="storage_required">PojavLauncher necesita que el almacenamiento externo esté conectado, por favor reconéctalo y reinicia la aplicación.</string>
+    <string name="storage_required">MojoLauncher necesita que el almacenamiento externo esté conectado, por favor reconéctalo y reinicia la aplicación.</string>
     <string name="mcl_setting_title_buttonallcaps">Usa únicamente letras mayúsculas en las etiquetas de los botones</string>
     <string name="mcl_setting_subtitle_buttonallcaps">Desactiva esta opción si quieres usar letras minúsculas en tus controles.</string>
-    <string name="create_profile">Crear un perfil nuevo</string>
     <string name="preference_shader_dump_title">Activar dumpeo de shaders</string>
     <string name="preference_shader_dump_description">Registra shaders compilados (sic).</string>
     <string name="percent_format">%d%%</string>
@@ -261,24 +257,19 @@
     <string name="forge_dl_progress">Descargando instalador para %s</string>
     <string name="forge_dl_searching">Buscando el número de la versión de Forge</string>
     <string name="modloader_dl_failed_to_load_list">Oh no, ¡Ocurrió un error cargando la lista de versiones!</string>
-    <string name="forge_dl_no_installer">Lo siento, pero esta versión de Forge no tiene un instalador, lo cúal aún no esta soportado por Pojav.</string>
+    <string name="forge_dl_no_installer">Lo siento, pero esta versión de Forge no tiene un instalador, lo cúal aún no esta soportado por Mojo.</string>
     <string name="forge_dl_select_version">Elige la versión de Forge</string>
     <string name="fabric_dl_progress">Descargando metadatos del cargador %s</string>
     <string name="fabric_dl_loader_version">Versión del cargador %s</string>
     <string name="fabric_dl_game_version">Versión de Minecraft</string>
     <string name="fabric_dl_install">Instalar</string>
     <string name="fabric_dl_cant_read_meta">Error al leer los metadatos del cargador %s. Intente de nuevo más tarde.</string>
-    <string name="modloader_dl_install_fabric">Crear instancia de Fabric</string>
-    <string name="modloader_dl_install_quilt">Crear instancia de Quilt</string>
-    <string name="modloader_dl_install_forge">Crear instancia de Forge</string>
-    <string name="create_profile_vanilla">Crear instancia de Minecraft Vanilla</string>
     <string name="create_profile_vanilla_like_versions">Versiones de Minecraft Vanilla</string>
     <string name="create_profile_modded_versions">Versiones modificadas</string>
     <string name="fabric_dl_loader_title">Elige versiones</string>
     <string name="of_dl_select_version">Seleciona la versión de OptiFine</string>
     <string name="of_dl_failed_to_scrape">Fallo al recolectar datos para la instalacion de OptiFine</string>
     <string name="of_dl_progress">Descargando %s</string>
-    <string name="create_profile_optifine">Crear instancia de OptiFine</string>
     <string name="hint_search_modpack">Buscar paquetes de mods</string>
     <string name="preference_vulkan_driver_system_title">Usar controlador Vulkan del sistema</string>
     <string name="preference_vulkan_driver_system_description">Forzar al launcher a usar el controlador Vulkan del sistema en lugar de Turnip en GPUs Adreno. Sólo afecta a Zink y mods que usan Vulkan.</string>
@@ -297,7 +288,6 @@
     <string name="modpack_install_notification_data_not_available">No se pudo descargar la información del mod loader</string>
     <string name="modpack_install_modloader_download_failed">Error al descargar los archivos del mod loader</string>
     <string name="modpack_install_download_failed">Error al descargar los archivos de modpack</string>
-    <string name="modpack_install_button">Crear perfil de modpack</string>
     <string name="notif_error_occured">Ha ocurrido un error</string>
     <string name="notif_error_occured_desc">Da clic para ver más detalles</string>
     <string name="fabric_dl_only_stable">Mostrar solo versiones estables</string>
@@ -322,7 +312,7 @@
     <string name="preference_category_miscellaneous">Ajustes varios</string>
     <string name="preference_category_video">Ajustes de video</string>
     <string name="notification_permission_dialog_title">Permiso requerido</string>
-    <string name="notification_permission_dialog_text">PojavLauncher necesita un permiso para enviar notificaciones para evitar que las descargas del juego o modpacks se detengan cuando minimizes la aplicación. Sin este permiso, Android puede cancelar tus descargas cuando PojavLauncher esté en segundo plano.</string>
+    <string name="notification_permission_dialog_text">MojoLauncher necesita un permiso para enviar notificaciones para evitar que las descargas del juego o modpacks se detengan cuando minimizes la aplicación. Sin este permiso, Android puede cancelar tus descargas cuando MojoLauncher esté en segundo plano.</string>
     <string name="notification_permission_toast">Siempre puedes cambiar de opinión más tarde yendo a Ajustes</string>
     <string name="preference_ask_for_notification_title">Permitir notificaciones</string>
     <string name="preference_ask_for_notification_description">Haz clic para volver a solicitar el permiso de notificaciones, necesario para qué las descargas en segundo plano del juego/modpack funcionen correctamente.</string>
@@ -357,7 +347,7 @@
     <string name="customctrl_visibility_title">Visibilidad</string>
     <string name="preference_remap_controller_title">Cambiar configuración de teclas del controlador</string>
     <string name="preference_remap_controller_description">Te permite modificar las teclas del teclado asignadas a cada botón del controlador</string>
-    <string name="mcl_button_discord">Discord</string>
+    <string name="mcl_button_social_media">Discord</string>
     <string name="ltw_render_distance_warning_msg">Su GPU no es capaz de renderizar más de 7 de distancia sin usar Sodium o mods similares. La distancia de renderizado será reducido automáticamente cuando haga click en \"OK\".</string>
     <string name="mcl_button_open_directory">Abrir directorio del juego</string>
     <string name="local_login_bad_username_title">Nombre de usuario inadecuado</string>

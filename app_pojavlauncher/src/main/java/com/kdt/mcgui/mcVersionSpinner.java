@@ -1,7 +1,6 @@
 package com.kdt.mcgui;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static net.kdt.pojavlaunch.fragments.ProfileEditorFragment.DELETED_PROFILE;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -21,15 +20,21 @@ import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import net.kdt.pojavlaunch.R;
+import git.artdeell.mojo.R;
+
+import net.kdt.pojavlaunch.PojavApplication;
 import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
-import net.kdt.pojavlaunch.fragments.ProfileEditorFragment;
+import net.kdt.pojavlaunch.extra.ExtraListener;
+import net.kdt.pojavlaunch.fragments.InstanceEditorFragment;
 import net.kdt.pojavlaunch.fragments.ProfileTypeSelectFragment;
-import net.kdt.pojavlaunch.prefs.LauncherPreferences;
-import net.kdt.pojavlaunch.profiles.ProfileAdapter;
-import net.kdt.pojavlaunch.profiles.ProfileAdapterExtra;
+import net.kdt.pojavlaunch.instances.DisplayInstance;
+import net.kdt.pojavlaunch.instances.Instances;
+import net.kdt.pojavlaunch.instances.InstanceAdapter;
+import net.kdt.pojavlaunch.instances.InstanceAdapterExtra;
+
+import java.io.IOException;
 
 import fr.spse.extended_view.ExtendedTextView;
 
@@ -58,9 +63,9 @@ public class mcVersionSpinner extends ExtendedTextView {
     private Object mPopupAnimation;
     private int mSelectedIndex;
 
-    private final ProfileAdapter mProfileAdapter = new ProfileAdapter(new ProfileAdapterExtra[]{
-            new ProfileAdapterExtra(VERSION_SPINNER_PROFILE_CREATE,
-                    R.string.create_profile,
+    private final InstanceAdapter mProfileAdapter = new InstanceAdapter(new InstanceAdapterExtra[]{
+            new InstanceAdapterExtra(VERSION_SPINNER_PROFILE_CREATE,
+                    R.string.create_instance,
                     ResourcesCompat.getDrawable(getResources(), R.drawable.ic_add, null)),
     });
 
@@ -68,30 +73,40 @@ public class mcVersionSpinner extends ExtendedTextView {
     /** Set the selection AND saves it as a shared preference */
     public void setProfileSelection(int position){
         setSelection(position);
-        LauncherPreferences.DEFAULT_PREF.edit()
-                .putString(LauncherPreferences.PREF_KEY_CURRENT_PROFILE,
-                        mProfileAdapter.getItem(position).toString())
-                .apply();
+        Instances.setSelectedInstance((DisplayInstance) mProfileAdapter.getItem(position));
     }
 
     public void setSelection(int position){
         if(mListView != null) mListView.setSelection(position);
-        mProfileAdapter.setView(this, mProfileAdapter.getItem(position), false);
+        mProfileAdapter.setView(this, position, false);
         mSelectedIndex = position;
+        mProfileAdapter.applySelectionIndex(mSelectedIndex);
     }
 
     public void openProfileEditor(FragmentActivity fragmentActivity) {
         Object currentSelection = mProfileAdapter.getItem(mSelectedIndex);
-        if(currentSelection instanceof ProfileAdapterExtra) {
-            performExtraAction((ProfileAdapterExtra) currentSelection);
+        if(currentSelection instanceof InstanceAdapterExtra) {
+            performExtraAction((InstanceAdapterExtra) currentSelection);
         }else{
-            Tools.swapFragment(fragmentActivity, ProfileEditorFragment.class, ProfileEditorFragment.TAG, null);
+            Tools.swapFragment(fragmentActivity, InstanceEditorFragment.class, InstanceEditorFragment.TAG, null);
         }
     }
 
+    private void applyInstances(Instances instances) {
+        mProfileAdapter.applyInstances(instances);
+        setSelection(instances.selectedIndex);
+    }
+
     /** Reload profiles from the file, forcing the spinner to consider the new data */
-    public void reloadProfiles(){
-        mProfileAdapter.reloadProfiles();
+    public void reloadProfiles() {
+        PojavApplication.sExecutorService.execute(()->{
+            try {
+                final Instances instances = Instances.loadDisplay();
+                Tools.runOnUiThread(()->applyInstances(instances));
+            } catch (final IOException e) {
+                Tools.runOnUiThread(()->Tools.showError(getContext(), e));
+            }
+        });
     }
 
     /** Initialize various behaviors */
@@ -103,17 +118,8 @@ public class mcVersionSpinner extends ExtendedTextView {
         int endPadding = getContext().getResources().getDimensionPixelOffset(R.dimen._5sdp);
         setPaddingRelative(startPadding, 0, endPadding, 0);
         setCompoundDrawablePadding(startPadding);
-
-        int profileIndex;
-        String extra_value = (String) ExtraCore.consumeValue(ExtraConstants.REFRESH_VERSION_SPINNER);
-        if(extra_value != null){
-            profileIndex = extra_value.equals(DELETED_PROFILE) ? 0
-                    : getProfileAdapter().resolveProfileIndex(extra_value);
-        }else
-            profileIndex = mProfileAdapter.resolveProfileIndex(
-                    LauncherPreferences.DEFAULT_PREF.getString(LauncherPreferences.PREF_KEY_CURRENT_PROFILE,""));
-
-        setProfileSelection(Math.max(0,profileIndex));
+        addOnAttachStateChangeListener(new ExtraAttachListener());
+        setSelection(0);
 
         // Popup window behavior
         setOnClickListener(new OnClickListener() {
@@ -133,7 +139,7 @@ public class mcVersionSpinner extends ExtendedTextView {
         });
     }
 
-    private void performExtraAction(ProfileAdapterExtra extra) {
+    private void performExtraAction(InstanceAdapterExtra extra) {
         //Replace with switch-case if you want to add more extra actions
         if (extra.id == VERSION_SPINNER_PROFILE_CREATE) {
             Tools.swapFragment((FragmentActivity) getContext(), ProfileTypeSelectFragment.class,
@@ -149,12 +155,12 @@ public class mcVersionSpinner extends ExtendedTextView {
         mListView.setAdapter(mProfileAdapter);
         mListView.setOnItemClickListener((parent, view, position, id) -> {
             Object item = mProfileAdapter.getItem(position);
-            if(item instanceof String) {
+            if(item instanceof DisplayInstance) {
                 hidePopup(true);
                 setProfileSelection(position);
-            }else if(item instanceof ProfileAdapterExtra) {
+            }else if(item instanceof InstanceAdapterExtra) {
                 hidePopup(false);
-                performExtraAction((ProfileAdapterExtra) item);
+                performExtraAction((InstanceAdapterExtra) item);
             }
         });
 
@@ -195,7 +201,23 @@ public class mcVersionSpinner extends ExtendedTextView {
         }
     }
 
-    public ProfileAdapter getProfileAdapter() {
-        return mProfileAdapter;
+    class ExtraAttachListener implements OnAttachStateChangeListener, ExtraListener<Void> {
+        @Override
+        public void onViewAttachedToWindow(@NonNull View view) {
+            reloadProfiles();
+            ExtraCore.addExtraListener(ExtraConstants.REFRESH_VERSION_SPINNER, this);
+        }
+
+        @Override
+        public void onViewDetachedFromWindow(@NonNull View view) {
+            ExtraCore.removeExtraListenerFromValue(ExtraConstants.REFRESH_VERSION_SPINNER, this);
+        }
+
+        @Override
+        public boolean onValueSet(String key, @NonNull Void value) {
+            post(mcVersionSpinner.this::reloadProfiles);
+            ExtraCore.consumeValue(key);
+            return false;
+        }
     }
 }

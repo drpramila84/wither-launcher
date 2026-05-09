@@ -4,19 +4,24 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.kdt.mcgui.ProgressLayout;
 
-import net.kdt.pojavlaunch.R;
+import git.artdeell.mojo.R;
 import net.kdt.pojavlaunch.Tools;
+import net.kdt.pojavlaunch.downloader.Downloader;
+import net.kdt.pojavlaunch.downloader.TaskMetadata;
+import net.kdt.pojavlaunch.mirrors.DownloadMirror;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.Constants;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.ModDetail;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.ModItem;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.ModrinthIndex;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.SearchFilters;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.SearchResult;
-import net.kdt.pojavlaunch.progresskeeper.DownloaderProgressWrapper;
+import net.kdt.pojavlaunch.utils.FileUtils;
 import net.kdt.pojavlaunch.utils.ZipUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipFile;
@@ -111,9 +116,13 @@ public class ModrinthApi implements ModpackApi{
     }
 
     @Override
-    public ModLoader installMod(ModDetail modDetail, int selectedVersion) throws IOException{
+    public ModLoader installModpack(ModDetail modDetail, int selectedVersion) throws IOException{
         //TODO considering only modpacks for now
-        return ModpackInstaller.installModpack(modDetail, selectedVersion, this::installMrpack);
+        return ModpackInstaller.downloadModpack(modDetail, selectedVersion, this::installMrpack);
+    }
+
+    public ModLoader installLocalModpack(String modpackName, File modpackFile, String icon) throws IOException {
+        return ModpackInstaller.installModpack(modpackName, modpackName, modpackFile, icon, this::installMrpack);
     }
 
     private static ModLoader createInfo(ModrinthIndex modrinthIndex) {
@@ -131,6 +140,10 @@ public class ModrinthApi implements ModpackApi{
         if((modLoaderVersion = dependencies.get("quilt-loader")) != null) {
             return new ModLoader(ModLoader.MOD_LOADER_QUILT, modLoaderVersion, mcVersion);
         }
+        if((modLoaderVersion = dependencies.get("neoforge")) != null) {
+            return new ModLoader(ModLoader.MOD_LOADER_NEOFORGE, modLoaderVersion, mcVersion);
+        }
+
         return null;
     }
 
@@ -139,12 +152,11 @@ public class ModrinthApi implements ModpackApi{
             ModrinthIndex modrinthIndex = Tools.GLOBAL_GSON.fromJson(
                     Tools.read(ZipUtils.getEntryStream(modpackZipFile, "modrinth.index.json")),
                     ModrinthIndex.class);
-            
-            ModDownloader modDownloader = new ModDownloader(instanceDestination);
-            for(ModrinthIndex.ModrinthIndexFile indexFile : modrinthIndex.files) {
-                modDownloader.submitDownload(indexFile.fileSize, indexFile.path, indexFile.hashes.sha1, indexFile.downloads);
+            try {
+                new ModrinthDownloader().startDownloads(modrinthIndex.files, instanceDestination);
+            }catch (InterruptedException e) {
+                throw new IOException("NIY: InterruptedException", e);
             }
-            modDownloader.awaitFinish(new DownloaderProgressWrapper(R.string.modpack_download_downloading_mods, ProgressLayout.INSTALL_MODPACK));
             ProgressLayout.setProgress(ProgressLayout.INSTALL_MODPACK, 0, R.string.modpack_download_applying_overrides, 1, 2);
             ZipUtils.zipExtract(modpackZipFile, "overrides/", instanceDestination);
             ProgressLayout.setProgress(ProgressLayout.INSTALL_MODPACK, 50, R.string.modpack_download_applying_overrides, 2, 2);
@@ -155,5 +167,27 @@ public class ModrinthApi implements ModpackApi{
 
     class ModrinthSearchResult extends SearchResult {
         int previousOffset;
+    }
+
+    static class ModrinthDownloader extends Downloader {
+        public ModrinthDownloader() {
+            super(ProgressLayout.INSTALL_MODPACK);
+        }
+
+        protected void startDownloads(ModrinthIndex.ModrinthIndexFile[] indexFiles, File instanceDestination) throws IOException, InterruptedException {
+            String absoluteInstancePath = instanceDestination.getAbsolutePath();
+            ArrayList<TaskMetadata> taskMetadatas = new ArrayList<>(indexFiles.length);
+            for(ModrinthIndex.ModrinthIndexFile file : indexFiles) {
+                File targetPath = new File(instanceDestination, file.path);
+                if(!targetPath.getAbsolutePath().startsWith(absoluteInstancePath)) throw new IOException("Bad path!");
+                FileUtils.ensureParentDirectory(targetPath);
+                taskMetadatas.add(new TaskMetadata(
+                        targetPath, new URL(file.downloads[0]), // TODO source selection
+                        file.fileSize, file.hashes.sha1,
+                        DownloadMirror.DOWNLOAD_CLASS_NONE
+                ));
+            }
+            runDownloads(taskMetadatas);
+        }
     }
 }

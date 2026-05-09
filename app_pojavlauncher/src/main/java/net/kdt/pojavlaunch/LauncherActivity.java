@@ -22,18 +22,19 @@ import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
 import com.kdt.mcgui.ProgressLayout;
-import com.kdt.mcgui.mcAccountSpinner;
 
-import net.kdt.pojavlaunch.contracts.OpenDocumentWithExtension;
+import net.kdt.pojavlaunch.authenticator.accounts.Accounts;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
 import net.kdt.pojavlaunch.extra.ExtraListener;
 import net.kdt.pojavlaunch.fragments.MainMenuFragment;
 import net.kdt.pojavlaunch.fragments.MicrosoftLoginFragment;
 import net.kdt.pojavlaunch.fragments.SelectAuthFragment;
+import net.kdt.pojavlaunch.instances.Instance;
+import net.kdt.pojavlaunch.instances.InstanceInstaller;
+import net.kdt.pojavlaunch.instances.Instances;
 import net.kdt.pojavlaunch.lifecycle.ContextAwareDoneListener;
 import net.kdt.pojavlaunch.lifecycle.ContextExecutor;
-import net.kdt.pojavlaunch.modloaders.modpacks.ModloaderInstallTracker;
 import net.kdt.pojavlaunch.modloaders.modpacks.imagecache.IconCacheJanitor;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;
 import net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment;
@@ -43,28 +44,19 @@ import net.kdt.pojavlaunch.services.ProgressServiceKeeper;
 import net.kdt.pojavlaunch.tasks.AsyncMinecraftDownloader;
 import net.kdt.pojavlaunch.tasks.AsyncVersionList;
 import net.kdt.pojavlaunch.tasks.MinecraftDownloader;
-import net.kdt.pojavlaunch.utils.DateUtils;
 import net.kdt.pojavlaunch.utils.NotificationUtils;
-import net.kdt.pojavlaunch.value.launcherprofiles.LauncherProfiles;
-import net.kdt.pojavlaunch.value.launcherprofiles.MinecraftProfile;
 
 import java.lang.ref.WeakReference;
-import java.text.ParseException;
+
+import git.artdeell.mojo.R;
 
 public class LauncherActivity extends BaseActivity {
     public static final String SETTING_FRAGMENT_TAG = "SETTINGS_FRAGMENT";
 
-    public final ActivityResultLauncher<Object> modInstallerLauncher =
-            registerForActivityResult(new OpenDocumentWithExtension("jar"), (data)->{
-                if(data != null) Tools.launchModInstaller(this, data);
-            });
-
-    private mcAccountSpinner mAccountSpinner;
     private FragmentContainerView mFragmentView;
     private ImageButton mSettingsButton;
     private ProgressLayout mProgressLayout;
     private ProgressServiceKeeper mProgressServiceKeeper;
-    private ModloaderInstallTracker mInstallTracker;
     private NotificationManager mNotificationManager;
 
     /* Allows to switch from one button "type" to another */
@@ -72,7 +64,7 @@ public class LauncherActivity extends BaseActivity {
         @Override
         public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
             mSettingsButton.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), f instanceof MainMenuFragment
-                    ? R.drawable.ic_menu_settings : R.drawable.ic_menu_home));
+                    ? R.drawable.ic_px_sliders : R.drawable.ic_px_home));
         }
     };
 
@@ -84,7 +76,10 @@ public class LauncherActivity extends BaseActivity {
 
     /* Listener for the auth method selection screen */
     private final ExtraListener<Boolean> mSelectAuthMethod = (key, value) -> {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(mFragmentView.getId());
+        // The "false" value is used to stop auth method selection
+        FragmentManager manager = getSupportFragmentManager();
+        if(!value || manager.isStateSaved()) return false;
+        Fragment fragment = manager.findFragmentById(mFragmentView.getId());
         // Allow starting the add account only from the main menu, should it be moved to fragment itself ?
         if(!(fragment instanceof MainMenuFragment)) return false;
 
@@ -94,7 +89,9 @@ public class LauncherActivity extends BaseActivity {
 
     /* Listener for the settings fragment */
     private final View.OnClickListener mSettingButtonListener = v -> {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(mFragmentView.getId());
+        FragmentManager manager = getSupportFragmentManager();
+        if(manager.isStateSaved()) return;
+        Fragment fragment = manager.findFragmentById(mFragmentView.getId());
         if(fragment instanceof MainMenuFragment){
             Tools.swapFragment(this, LauncherPreferenceFragment.class, SETTING_FRAGMENT_TAG, null);
         } else{
@@ -109,43 +106,32 @@ public class LauncherActivity extends BaseActivity {
             return false;
         }
 
-        String selectedProfile = LauncherPreferences.DEFAULT_PREF.getString(LauncherPreferences.PREF_KEY_CURRENT_PROFILE,"");
-        if (LauncherProfiles.mainProfileJson == null || !LauncherProfiles.mainProfileJson.profiles.containsKey(selectedProfile)){
-            Toast.makeText(this, R.string.error_no_version, Toast.LENGTH_LONG).show();
+        Instance selectedInstance = Instances.loadSelectedInstance();
+
+        if(selectedInstance == null) {
+            Toast.makeText(this, R.string.no_instance, Toast.LENGTH_LONG).show();
             return false;
         }
-        MinecraftProfile prof = LauncherProfiles.mainProfileJson.profiles.get(selectedProfile);
-        if (prof == null || prof.lastVersionId == null || "Unknown".equals(prof.lastVersionId)){
+
+        if(selectedInstance.installer != null) {
+            selectedInstance.installer.start();
+            return false;
+        }
+
+        if (!Tools.isValidString(selectedInstance.versionId)){
             Toast.makeText(this, R.string.error_no_version, Toast.LENGTH_LONG).show();
             return false;
         }
 
-        if(mAccountSpinner.getSelectedAccount() == null){
+        if(Accounts.getCurrent() == null){
             Toast.makeText(this, R.string.no_saved_accounts, Toast.LENGTH_LONG).show();
             ExtraCore.setValue(ExtraConstants.SELECT_AUTH_METHOD, true);
             return false;
         }
-        String normalizedVersionId = AsyncMinecraftDownloader.normalizeVersionId(prof.lastVersionId);
+        String normalizedVersionId = AsyncMinecraftDownloader.normalizeVersionId(selectedInstance.versionId);
         JMinecraftVersionList.Version mcVersion = AsyncMinecraftDownloader.getListedVersion(normalizedVersionId);
-
-        // Do not load when is a modded version or older than minecraft 1.3 on demo account
-        if (mAccountSpinner.getSelectedAccount().isDemo()) {
-            boolean isOlderThan13 = true;
-
-            if (mcVersion != null) {
-                try {
-                    isOlderThan13 = DateUtils.dateBefore(DateUtils.parseReleaseDate(mcVersion.releaseTime), 2012, 6, 22);
-                } catch (ParseException ignored) {}
-            }
-
-            if (isOlderThan13) {
-                Toast.makeText(this, R.string.toast_not_available_demo, Toast.LENGTH_LONG).show();
-                return false;
-            }
-        }
-
         new MinecraftDownloader().start(
-                this,
+                this.getAssets(),
                 mcVersion,
                 normalizedVersionId,
                 new ContextAwareDoneListener(this, normalizedVersionId)
@@ -161,6 +147,7 @@ public class LauncherActivity extends BaseActivity {
                     mNotificationManager.cancel(NotificationUtils.NOTIFICATION_ID_GAME_START)
             );
         }
+        return false;
     };
 
     private ActivityResultLauncher<String> mRequestNotificationPermissionLauncher;
@@ -180,18 +167,6 @@ public class LauncherActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pojav_launcher);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        // If we don't have a back stack root yet...
-        if(fragmentManager.getBackStackEntryCount() < 1) {
-            // Manually add the first fragment to the backstack to get easily back to it
-            // There must be a better way to handle the root though...
-            // (artDev: No, there is not. I've spent days researching this for another unrelated project.)
-            fragmentManager.beginTransaction()
-                    .setReorderingAllowed(true)
-                    .addToBackStack("ROOT")
-                    .add(R.id.container_fragment, MainMenuFragment.class, null, "ROOT").commit();
-        }
-
 
         IconCacheJanitor.runJanitor();
         mRequestNotificationPermissionLauncher = registerForActivityResult(
@@ -218,29 +193,27 @@ public class LauncherActivity extends BaseActivity {
 
         ExtraCore.addExtraListener(ExtraConstants.LAUNCH_GAME, mLaunchGameListener);
 
-        new AsyncVersionList().getVersionList(versions -> ExtraCore.setValue(ExtraConstants.RELEASE_TABLE, versions), false);
-
-        mInstallTracker = new ModloaderInstallTracker(this);
+        new AsyncVersionList().getVersionList(versions -> ExtraCore.setValue(ExtraConstants.RELEASE_TABLE, versions));
 
         mProgressLayout.observe(ProgressLayout.DOWNLOAD_MINECRAFT);
         mProgressLayout.observe(ProgressLayout.UNPACK_RUNTIME);
         mProgressLayout.observe(ProgressLayout.INSTALL_MODPACK);
-        mProgressLayout.observe(ProgressLayout.AUTHENTICATE_MICROSOFT);
+        mProgressLayout.observe(ProgressLayout.AUTHENTICATE);
         mProgressLayout.observe(ProgressLayout.DOWNLOAD_VERSION_LIST);
+        mProgressLayout.observe(ProgressLayout.INSTANCE_INSTALL);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         ContextExecutor.setActivity(this);
-        mInstallTracker.attach();
+        InstanceInstaller.postInstallCheck(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         ContextExecutor.clearActivity();
-        mInstallTracker.detach();
     }
 
     @Override
@@ -273,17 +246,7 @@ public class LauncherActivity extends BaseActivity {
             }
         }
 
-        // Check if we are at the root then
-        if(getVisibleFragment("ROOT") != null){
-            finish();
-        }
-
         super.onBackPressed();
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        LauncherPreferences.computeNotchSize(this);
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -354,7 +317,6 @@ public class LauncherActivity extends BaseActivity {
     private void bindViews(){
         mFragmentView = findViewById(R.id.container_fragment);
         mSettingsButton = findViewById(R.id.setting_button);
-        mAccountSpinner = findViewById(R.id.account_spinner);
         mProgressLayout = findViewById(R.id.progress_layout);
     }
 }

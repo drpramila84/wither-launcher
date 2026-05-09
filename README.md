@@ -1,151 +1,86 @@
-<h1 align="center">Wither Launcher</h1>
+<H1 align="center">MojoLauncher</H1>
 
-<img src="https://github.com/Wither LauncherTeam/Wither Launcher/blob/v3_openjdk/app_witherlauncher/src/main/assets/witherlauncher.png" align="left" width="130" height="150" alt="Wither Launcher logo">
+<a href="https://github.com/MojoLauncher/MojoLauncher/blob/v3_openjdk/README_RU.md">Readme на русском</a>
 
-[![Android CI](https://github.com/Wither LauncherTeam/Wither Launcher/workflows/Android%20CI/badge.svg)](https://github.com/Wither LauncherTeam/Wither Launcher/actions)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Wither LauncherTeam/Wither Launcher)](https://github.com/Wither LauncherTeam/Wither Launcher/actions)
-[![Crowdin](https://badges.crowdin.net/witherlauncher/localized.svg)](https://crowdin.com/project/witherlauncher)
-[![Discord](https://img.shields.io/discord/724163890803638273.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.com/invite/aenk3EUvER)
-[![Twitter Follow](https://img.shields.io/twitter/follow/plaunchteam?color=blue&style=flat-square)](https://twitter.com/PLaunchTeam)
+<img src="https://github.com/MojoLauncher/MojoLauncher/blob/v3_openjdk/app_pojavlauncher/src/main/assets/pojavlauncher.png" align="left" width="150" height="150" alt="MojoLauncher logo">
 
-*From [Boardwalk](https://github.com/zhuowei/Boardwalk)'s ashes here comes Wither Launcher!*
+[![Android CI](https://github.com/MojoLauncher/MojoLauncher/workflows/Android%20CI/badge.svg)](https://github.com/MojoLauncher/MojoLauncher/actions)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/MojoLauncher/MojoLauncher)](https://github.com/MojoLauncher/MojoLauncher/actions)
+[![Crowdin](https://badges.crowdin.net/pojavlauncher/localized.svg)](https://crowdin.com/project/pojavlauncher)
+[![Discord](https://img.shields.io/discord/1365346109131722753.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/VHdwQFsaGX)
 
-Wither Launcher is a launcher that allows you to play Minecraft: Java Edition on your Android and [iOS](https://github.com/Wither LauncherTeam/Wither Launcher_iOS) devices.
+* MojoLauncher is a launcher, based on [PojavLauncher](https://github.com/PojavLauncherTeam/PojavLauncher), that allows you to play Minecraft: Java Edition on your Android device!
 
-For more details, check out our [wiki](https://witherlauncher.app/)!
+* It can run almost every version of Minecraft, allowing you to use .jar only installers to install modloaders such as [Forge](https://files.minecraftforge.net/) and [Fabric](http://fabricmc.net/) and mods like [OptiFine](https://optifine.net).
 
-## Important Notes
+## Navigation
+- [Introduction](#introduction)  
+- [Getting MojoLauncher](#getting-mojolauncher)
+- [Building](#building) 
+- [Current roadmap](#current-roadmap) 
+- [License](#license) 
+- [Contributing](#contributing) 
+- [Credits & Third party components and their licenses](#credits--third-party-components-and-their-licenses-if-available)
 
-**Wither Launcher has been discontinued** and is no longer supported. Its successor is available [here](https://github.com/AngelAuraMC/Amethyst-Android).
+## Introduction 
+* MojoLauncher is a Minecraft: Java Edition launcher for Android based on [PojavLauncher](https://github.com/PojavLauncherTeam/PojavLauncher)
+* This launcher can launch almost all available Minecraft versions ranging from rd-132211 to 1.21 snapshots (including Combat Test versions). 
+* Modding via Forge and Fabric are also supported. 
 
-## Table of Contents
+## Getting MojoLauncher
 
-* [Introduction](#introduction)
-* [Getting Wither Launcher](#getting-witherlauncher)
-* [Building](#building)
-    * [Quick Build (Recommended)](#quick-build-recommended)
-    * [Detailed Build](#detailed-build)
-* [Current Status](#current-status)
-* [Known Issues](#known-issues)
-* [FAQ](#faq)
-* [Contributing](#contributing)
-* [Support](#support)
-* [License](#license)
-* [Credits & Dependencies](#credits--dependencies)
-* [Roadmap](#roadmap)
+You can get MojoLauncher via three methods:
 
-## Introduction
+1. You can get the prebuilt app from [automatic builds](https://github.com/MojoLauncher/MojoLauncher/actions).
 
-* Wither Launcher is a Minecraft: Java Edition launcher for Android and iOS based on [Boardwalk](https://github.com/zhuowei/Boardwalk)
-* This launcher can launch almost all available Minecraft versions ranging from rd-132211 to 1.21 snapshots (including Combat Test versions)
-* Modding via Forge and Fabric are also supported.
-* This repository contains source code for Android. For iOS/iPadOS, check out [Wither Launcher_iOS](https://github.com/Wither LauncherTeam/Wither Launcher_iOS).
+2. You can get it from Google Play by clicking on this badge:
+[![Google Play](https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=git.artdeell.mojo)
 
-## Getting Wither Launcher
+3. You can [build](#building) from source.
+## Building   
+* Build the launcher (it will automatically download all required components)
+```
+./gradlew :app_pojavlauncher:assembleDebug
+```
+(Replace `./gradlew` with `.\gradlew.bat` if you are building on Windows).
 
-You can get Wither Launcher via three methods:
-
-1. **Releases:** Download the prebuilt app from our [stable releases](https://github.com/Wither LauncherTeam/Wither Launcher/releases) or [automatic builds](https://github.com/Wither LauncherTeam/Wither Launcher/actions).
-2. **Google Play:** Get it from Google Play by clicking on this badge: [![Google Play](https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=net.kdt.pojavlaunch)
-3. **Build from Source:** Follow the [building instructions](#building) below.
-
-## Building
-
-### Quick Build (Recommended)
-
-The easiest way to build Wither Launcher is to use the pre-built JREs provided by our CI.
-
-1. Clone the repository: `git clone https://github.com/Wither LauncherTeam/Wither Launcher.git`
-2. Build the launcher: `./gradlew :app_witherlauncher:assembleDebug` (Use `gradlew.bat` on Windows)
-
-The built APK will be located in `app_witherlauncher/build/outputs/apk/debug/`.
-
-### Detailed Build
-
-If you need more control over the build process, follow these steps:
-
-1. **Java Runtime Environment (JRE):** Download the `jre8-pojav` artifact from our [CI auto builds](https://github.com/Wither LauncherTeam/android-openjdk-build-multiarch/actions).  This package contains pre-built JREs for all supported architectures.  If you need to build the JRE yourself, follow the instructions in the [android-openjdk-build-multiarch](https://github.com/Wither LauncherTeam/android-openjdk-build-multiarch) repository.
-
-2. **LWJGL:** The build instructions for the custom LWJGL are available over the [LWJGL repository](https://github.com/Wither LauncherTeam/lwjgl3).
-
-3. **Language List:** Because languages are auto-added by Crowdin, you need to run the language list generator before building. In the project directory, run:
-   * Linux/macOS:
-     ```bash
-     chmod +x scripts/languagelist_updater.sh
-     bash scripts/languagelist_updater.sh
-     ```
-   * Windows:
-     ```batch
-     scripts\languagelist_updater.bat
-     ```
-
-4. **Build GLFW stub:** `./gradlew :jre_lwjgl3glfw:build`
-
-5. **Build the launcher:** `./gradlew :app_witherlauncher:assembleDebug` (Replace `gradlew` with `gradlew.bat` on Windows).
-
-## Current Status
-
-* [x] OpenJDK 8 Mobile port: ARM32, ARM64, x86, x86_64
-* [x] OpenJDK 17 Mobile port: ARM32, ARM64, x86, x86_64
-* [x] OpenJDK 21 Mobile port: ARM32, ARM64, x86, x86_64
-* [x] Headless mod installer
-* [x] Mod installer with GUI
-* [x] OpenGL in OpenJDK environment
-* [x] OpenAL (works on most devices)
-* [x] Support for Minecraft 1.12.2 and below
-* [x] Support for Minecraft 1.13 and above
-* [x] Support for Minecraft 1.17 (22w13a) and above
-* [x] Game surface zooming
-* [x] New input pipe rewritten to native code
-* [x] Rewritten entire controls system
-* [ ] More to come!
+## Current roadmap
+- [x] Instance system in favor of profiles
+- [x] Out-of-the box 1.21.5 support
+- [x] mrpack/CurseForge zip import
+- [ ] LTW: resolve issues with Create
+- [ ] LTW: enable compute shader/image extensions
+- [ ] LTW: switch to a color-renderable format for framebuffers
+- [ ] Modpack/mod management tool
+- [ ] MMC-compatible instance import
+- [ ] Patch-on-dlopen for mod native libraries
+- [ ] Replace Holy-GL4ES 1.1.5 with KW (maybe? need to figure out requirements)
 
 ## Known Issues
-
-See our [issue tracker](https://github.com/Wither LauncherTeam/Wither Launcher/issues) for a list of known issues and their current status.
-
-## FAQ
-
-See our [wiki](https://witherlauncherteam.github.io/) for more information.
-
-## Contributing
-
-Contributions are welcome! We welcome any type of contribution, not only code. For example, you can help improve the [wiki](https://witherlauncherteam.github.io/), contribute to the [translations](https://crowdin.com/project/witherlauncher), or submit bug reports and feature requests.
-
-Any code change should be submitted as a pull request. The description should explain what the code does and give steps to execute it.
-
-## Support
-
-For support, please join our [Discord server](https://discord.com/invite/aenk3EUvER).
+- Some physical mice may have very slow mouse speed
+- On Holy GL4ES, large texture atlases may be distorted (resulting in stretched/blocky textures in modpacks)
+- Probably more, that's why we have a bug tracker ;) 
 
 ## License
+- MojoLauncher is licensed under [GNU LGPLv3](https://github.com/MojoLauncher/MojoLauncher/blob/v3_openjdk/LICENSE).
 
-Wither Launcher is licensed under [GNU LGPLv3](https://github.com/Wither LauncherTeam/Wither Launcher/blob/v3_openjdk/LICENSE).
+## Contributing
+Contributions are welcome! We welcome any type of contribution, not only code. For example, you can help the wiki shape up. You can help the [translation](https://crowdin.com/project/pojavlauncher) too!
 
-## Credits & Dependencies
 
-* [Boardwalk](https://github.com/zhuowei/Boardwalk) (JVM Launcher): Unknown License/[Apache License 2.0](https://github.com/zhuowei/Boardwalk/blob/master/LICENSE) or GNU GPLv2.
-* Android Support Libraries: [Apache License 2.0](https://android.googlesource.com/platform/prebuilts/maven_repo/android/+/master/NOTICE.txt).
-* [GL4ES](https://github.com/Wither LauncherTeam/gl4es): [MIT License](https://github.com/ptitSeb/gl4es/blob/master/LICENSE).
-* [OpenJDK](https://github.com/Wither LauncherTeam/openjdk-multiarch-jdk8u): [GNU GPLv2 License](https://openjdk.java.net/legal/gplv2+ce.html).
-* [LWJGL3](https://github.com/Wither LauncherTeam/lwjgl3): [BSD-3 License](https://github.com/LWJGL/lwjgl3/blob/master/LICENSE.md).
-* [LWJGLX](https://github.com/Wither LauncherTeam/lwjglx) (LWJGL2 API compatibility layer for LWJGL3): unknown license.
-* [Mesa 3D Graphics Library](https://gitlab.freedesktop.org/mesa/mesa): [MIT License](https://docs.mesa3d.org/license.html).
-* [pro-grade](https://github.com/pro-grade/pro-grade) (Java sandboxing security manager): [Apache License 2.0](https://github.com/pro-grade/pro-grade/blob/master/LICENSE.txt).
-* [bhook](https://github.com/bytedance/bhook) (Used for exit code trapping): [MIT license](https://github.com/bytedance/bhook/blob/main/LICENSE).
-* [libepoxy](https://github.com/anholt/libepoxy): [MIT License](https://github.com/anholt/libepoxy/blob/master/COPYING).
-* [virglrenderer](https://github.com/Wither LauncherTeam/virglrenderer): [MIT License](https://gitlab.freedesktop.org/virgl/virglrenderer/-/blob/master/COPYING).
-* Thanks to [MCHeads](https://mc-heads.net) for providing Minecraft avatars.
+Any code change to this repository should be submitted as a pull request. The description should explain what the code does and give steps to execute it.
 
-## Roadmap
-
-We are currently focusing on:
-
-* Exploring new rendering technologies.
-
-Future plans include:
-
-* Improving stability and performance.
-* Enhancing the mod installation experience.
-
-We welcome community feedback and suggestions for our roadmap.  Please feel free to open a feature request in our [issue tracker](https://github.com/Wither LauncherTeam/Wither Launcher/issues).
+## Credits & Third party components and their licenses (if available)
+- [PojavLauncher](https://github.com/PojavLauncherTeam/PojavLauncher): [GNU LGPLv3 License](https://github.com/PojavLauncherTeam/PojavLauncher/blob/v3_openjdk/LICENSE)
+- [Boardwalk](https://github.com/zhuowei/Boardwalk) (JVM Launcher): Unknown License/[Apache License 2.0](https://github.com/zhuowei/Boardwalk/blob/master/LICENSE) or GNU GPLv2.
+- Android Support Libraries: [Apache License 2.0](https://android.googlesource.com/platform/prebuilts/maven_repo/android/+/master/NOTICE.txt).
+- [GL4ES](https://github.com/PojavLauncherTeam/gl4es): [MIT License](https://github.com/ptitSeb/gl4es/blob/master/LICENSE).<br>
+- [OpenJDK](https://github.com/PojavLauncherTeam/openjdk-multiarch-jdk8u): [GNU GPLv2 License](https://openjdk.java.net/legal/gplv2+ce.html).<br>
+- [LWJGL3](https://github.com/MojoLauncher/lwjgl3): [BSD-3 License](https://github.com/LWJGL/lwjgl3/blob/master/LICENSE.md).
+- [Mesa 3D Graphics Library](https://gitlab.freedesktop.org/mesa/mesa): [MIT License](https://docs.mesa3d.org/license.html).
+- [pro-grade](https://github.com/pro-grade/pro-grade) (Java sandboxing security manager): [Apache License 2.0](https://github.com/pro-grade/pro-grade/blob/master/LICENSE.txt).
+- [bhook](https://github.com/bytedance/bhook) (Used for exit code trapping): [MIT license](https://github.com/bytedance/bhook/blob/main/LICENSE).
+- [Authlib-Injector](https://github.com/yushijinhun/authlib-injector) (Used for authorisation via ely.by): [AGPL-3.0](https://github.com/yushijinhun/authlib-injector/blob/develop/LICENSE).
+- [alsoft](https://github.com/kcat/openal-soft/) (Audio output library): [GNU LIBRARY GENERAL PUBLIC LICENSE](https://github.com/kcat/openal-soft/blob/master/COPYING) and [modified PFFFT](https://github.com/kcat/openal-soft/blob/master/LICENSE-pffft).
+- [oboe](https://github.com/google/oboe): [Apache License 2.0](https://github.com/google/oboe/blob/main/LICENSE).
+- Thanks to [Mineskin](https://mineskin.eu/) for providing Minecraft avatars.

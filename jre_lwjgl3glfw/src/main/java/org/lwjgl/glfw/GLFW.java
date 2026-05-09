@@ -4,24 +4,43 @@
  */
 package org.lwjgl.glfw;
 
-import android.util.*;
+import static org.lwjgl.opengl.GL20.GL_EXTENSIONS;
+import static org.lwjgl.opengl.GL20.glGetString;
+import static org.lwjgl.system.APIUtil.apiGetFunctionAddress;
+import static org.lwjgl.system.Checks.CHECKS;
+import static org.lwjgl.system.Checks.check;
+import static org.lwjgl.system.Checks.checkSafe;
+import static org.lwjgl.system.JNI.callJV;
+import static org.lwjgl.system.JNI.callV;
+import static org.lwjgl.system.JNI.invokeI;
+import static org.lwjgl.system.JNI.invokeP;
+import static org.lwjgl.system.JNI.invokePP;
+import static org.lwjgl.system.JNI.invokePPV;
+import static org.lwjgl.system.JNI.invokePV;
+import static org.lwjgl.system.JNI.invokeV;
+import static org.lwjgl.system.MemoryStack.stackGet;
+import static org.lwjgl.system.MemoryUtil.memAddressSafe;
+import static org.lwjgl.system.MemoryUtil.memPutInt;
+import static org.lwjgl.system.MemoryUtil.memUTF8Safe;
 
-import java.lang.reflect.*;
-import java.nio.*;
+import android.util.ArrayMap;
 
-import javax.annotation.*;
-
-import org.lwjgl.*;
-import org.lwjgl.system.*;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.Library;
+import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import org.lwjgl.system.NativeType;
+import org.lwjgl.system.SharedLibrary;
 
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.system.APIUtil.*;
-import static org.lwjgl.system.Checks.*;
-import static org.lwjgl.system.JNI.*;
-import static org.lwjgl.system.MemoryStack.*;
-import static org.lwjgl.system.MemoryUtil.*;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.Map;
+
+import javax.annotation.Nullable;
 
 public class GLFW
 {
@@ -316,7 +335,8 @@ public class GLFW
     GLFW_STICKY_KEYS          = 0x33002,
     GLFW_STICKY_MOUSE_BUTTONS = 0x33003,
     GLFW_LOCK_KEY_MODS        = 0x33004,
-    GLFW_RAW_MOUSE_MOTION     = 0x33005;
+    GLFW_RAW_MOUSE_MOTION     = 0x33005,
+    GLFW_IME                  = 0x33007;
 
     /** Cursor state. */
     public static final int
@@ -492,6 +512,9 @@ public class GLFW
     /* volatile */ public static GLFWWindowMaximizeCallback mGLFWWindowMaximizeCallback;
     /* volatile */ public static GLFWWindowPosCallback mGLFWWindowPosCallback;
     /* volatile */ public static GLFWWindowRefreshCallback mGLFWWindowRefreshCallback;
+    public static GLFWPreeditCallback mGLFWPreeditCallback;
+    public static GLFWPreeditCandidateCallback mGLFWPreeditCandidateCallback;
+    public static GLFWIMEStatusCallback mGLFWIMEStatusCallback;
 
     // Store callback method references directly to avoid a roundtrip through
     // JNI when calling the default LWJGL callbacks.
@@ -599,7 +622,6 @@ public class GLFW
 
     /** Contains the function pointers loaded from the glfw {@link SharedLibrary}. */
     public static final class Functions {
-
         private Functions() {}
 
         /** Function address. */
@@ -615,11 +637,36 @@ public class GLFW
         SwapInterval = apiGetFunctionAddress(GLFW, "pojavSwapInterval"),
         PumpEvents = apiGetFunctionAddress(GLFW, "pojavPumpEvents"),
         StopPumping = apiGetFunctionAddress(GLFW, "pojavStopPumping"),
-        StartPumping = apiGetFunctionAddress(GLFW, "pojavStartPumping");
+        StartPumping = apiGetFunctionAddress(GLFW, "pojavStartPumping"),
+        CreateCursor = apiGetFunctionAddress(GLFW, "pojavCreateCursor"),
+        SetCursor = apiGetFunctionAddress(GLFW, "pojavSetCursor"),
+        DestroyCursor = apiGetFunctionAddress(GLFW, "pojavDestroyCursor");
     }
 
     public static SharedLibrary getLibrary() {
         return GLFW;
+    }
+
+    public static boolean glfwPlatformSupported(int platform) {
+        return false;
+    }
+
+    public static GLFWPreeditCallback glfwSetPreeditCallback(long window, GLFWPreeditCallbackI glfwPreeditCallback) {
+        GLFWPreeditCallback oldCallback = mGLFWPreeditCallback;
+        if(glfwPreeditCallback == null) mGLFWPreeditCallback = null;
+        return oldCallback;
+    }
+
+    public static GLFWPreeditCandidateCallback glfwSetPreeditCandidateCallback(long window, GLFWPreeditCandidateCallbackI cbfun) {
+        GLFWPreeditCandidateCallback oldCallback = mGLFWPreeditCandidateCallback;
+        if(cbfun == null) mGLFWPreeditCandidateCallback = null;
+        return oldCallback;
+    }
+
+    public static GLFWIMEStatusCallback glfwSetIMEStatusCallback(long window, GLFWIMEStatusCallbackI cbfun) {
+        GLFWIMEStatusCallback oldCallback = mGLFWIMEStatusCallback;
+        if(cbfun == null) mGLFWIMEStatusCallback = null;
+        return oldCallback;
     }
 
     @SuppressWarnings("unused") // Used by pojavexec
@@ -1134,7 +1181,12 @@ public class GLFW
     public static void glfwPostEmptyEvent() {}
 
     public static int glfwGetInputMode(@NativeType("GLFWwindow *") long window, int mode) {
-        return internalGetWindow(window).inputModes.get(mode);
+        Integer modeState = internalGetWindow(window).inputModes.get(mode);
+        if(modeState == null) {
+            if(mode == GLFW_CURSOR) return GLFW_CURSOR_NORMAL;
+            else return GLFW_FALSE;
+        }
+        return modeState;
     }
 
     public static void glfwSetInputMode(@NativeType("GLFWwindow *") long window, int mode, int value) {
@@ -1184,14 +1236,36 @@ public class GLFW
         CallbackBridge.sendGrabbing(mGLFWIsGrabbing, (int) xpos, (int) ypos);
     }*/
 
-    public static long glfwCreateCursor(@NativeType("const GLFWimage *") GLFWImage image, int xhot, int yhot) {
-        return 4L;
+    public static long nglfwCreateCursor(long image, int xhot, int yhot) {
+        long __functionAddress = Functions.CreateCursor;
+        if (CHECKS) {
+            GLFWImage.validate(image);
+        }
+        return invokePP(image, xhot, yhot, __functionAddress);
     }
+
+    @NativeType("GLFWcursor *")
+    public static long glfwCreateCursor(@NativeType("GLFWimage const *") GLFWImage image, int xhot, int yhot) {
+        return nglfwCreateCursor(image.address(), xhot, yhot);
+    }
+    @NativeType("GLFWcursor *")
     public static long glfwCreateStandardCursor(int shape) {
-        return 4L;
+        return 0L; // default cursor is rendered when cursor == null
     }
-    public static void glfwDestroyCursor(@NativeType("GLFWcursor *") long cursor) {}
-    public static void glfwSetCursor(@NativeType("GLFWwindow *") long window, @NativeType("GLFWcursor *") long cursor) {}
+    public static void glfwDestroyCursor(@NativeType("GLFWcursor *") long cursor) {
+        long __functionAddress = Functions.DestroyCursor;
+        if (CHECKS) {
+            check(cursor);
+        }
+        invokePV(cursor, __functionAddress);
+    }
+    public static void glfwSetCursor(@NativeType("GLFWwindow *") long window, @NativeType("GLFWcursor *") long cursor) {
+        long __functionAddress = Functions.SetCursor;
+        if (CHECKS) {
+            check(window);
+        }
+        invokePPV(window, cursor, __functionAddress);
+    }
 
     public static boolean glfwRawMouseMotionSupported() {
         // Should be not supported?
@@ -1242,7 +1316,10 @@ public class GLFW
         }else return null;
     }
     public static boolean glfwJoystickIsGamepad(int jid) {
-        if(jid == GLFW_JOYSTICK_1) return true;
+        if(jid == GLFW_JOYSTICK_1) {
+            CallbackBridge.enableGamepadDirectInput();
+            return true;
+        }
         else return false;
     }
     public static String glfwGetJoystickGUID(int jid) {

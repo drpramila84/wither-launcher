@@ -14,7 +14,7 @@
     <!-- AlertDialog title -->
     <string name="alerttitle_installmod">Mod インストーラーを選択</string>
     <!-- Error messages -->
-    <string name="error_fatal">PojavLauncher が異常終了しました</string>
+    <string name="error_fatal">MojoLauncher が異常終了しました</string>
     <string name="error_no_version">バージョンがありません</string>
     <string name="error_show_more">詳細を表示</string>
     <string name="error_show_less">詳細を閉じる</string>
@@ -173,10 +173,8 @@
     <string name="global_delete">削除</string>
     <string name="pedit_java_runtime">Javaランタイム</string>
     <string name="pedit_renderer">レンダラー</string>
-    <string name="arc_capes_title">コスメチカ・ケープズ</string>
-    <string name="arc_capes_desc">Cosmetica（以前のArc）のケープを有効にします。詳細については、https：//cosmetica.ccをご覧ください。 OptiFineが必要です。</string>
     <string name="notif_channel_name">一般</string>
-    <string name="lazy_service_default_title">Pojav フォアグラウンドサービス</string>
+    <string name="lazy_service_default_title">Mojo フォアグラウンドサービス</string>
     <string name="mcl_setting_veroption_installed">インストール済み</string>
     <string name="use_global_default">(グローバル既定値を使用する)</string>
     <string name="progresslayout_tasks_in_progress">%d タスクが進行中</string>
@@ -201,7 +199,6 @@
     <string name="preference_gyro_sensitivity_title">ジャイロコントロールの感度</string>
     <string name="preference_gyro_sample_rate_title">ジャイロコントロールサンプリングの速度</string>
     <string name="microsoft_login_retry_later">リクエストが多すぎるため、後でもう一度お試しください。</string>
-    <string name="create_profile">新規プロフィールの作成</string>
     <string name="preference_shader_dump_title">シェーダーダンプをオンにする</string>
     <string name="percent_format">%d%%</string>
     <string name="customctrl_editor_exit_title">終了しますか？</string>
@@ -217,10 +214,6 @@
     <string name="forge_dl_select_version">Forge のバージョンを選択</string>
     <string name="fabric_dl_game_version">Minecraft バージョン</string>
     <string name="fabric_dl_install">インストール</string>
-    <string name="modloader_dl_install_fabric">Fabric プロファイルを作成する</string>
-    <string name="modloader_dl_install_quilt">Quilt プロファイルを作成する</string>
-    <string name="modloader_dl_install_forge">Forge プロファイルを作成する</string>
-    <string name="create_profile_vanilla">新規プロファイル(Vanilla) を作成する</string>
     <string name="fabric_dl_loader_title">バージョンの選択</string>
     <string name="of_dl_select_version">OptiFine のバージョンを選択</string>
     <string name="of_dl_progress">%s をダウンロード中</string>
