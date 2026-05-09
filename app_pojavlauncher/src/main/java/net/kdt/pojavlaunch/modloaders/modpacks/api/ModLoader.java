@@ -1,9 +1,14 @@
 package net.kdt.pojavlaunch.modloaders.modpacks.api;
 
+import android.app.Activity;
+import android.content.Intent;
+
+import net.kdt.pojavlaunch.LauncherActivity;
 import net.kdt.pojavlaunch.instances.InstanceInstaller;
 import net.kdt.pojavlaunch.modloaders.FabriclikeUtils;
 import net.kdt.pojavlaunch.modloaders.ForgelikeUtils;
 
+import java.io.File;
 import java.io.IOException;
 
 public class ModLoader {
@@ -78,6 +83,21 @@ public class ModLoader {
             default:
                 return null;
         }
+    }
+
+    /**
+     * Get an Intent to start the GUI installer for this mod loader.
+     * @param activity the host Activity
+     * @param installFile the installer jar file
+     * @return an Intent to start the installation Activity
+     */
+    public Intent getInstallationIntent(Activity activity, File installFile) {
+        Intent intent = new Intent(activity, LauncherActivity.class);
+        intent.putExtra("modInstallFile", installFile.getAbsolutePath());
+        intent.putExtra("modLoaderType", modLoaderType);
+        intent.putExtra("modLoaderVersion", modLoaderVersion);
+        intent.putExtra("minecraftVersion", minecraftVersion);
+        return intent;
     }
 
     /**

@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import net.kdt.pojavlaunch.R;
 import net.kdt.pojavlaunch.Tools;
+import net.kdt.pojavlaunch.utils.RendererCompatUtil;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
 import net.kdt.pojavlaunch.multirt.MultiRTUtils;
@@ -82,7 +83,7 @@ public class ProfileEditorFragment extends Fragment implements CropperUtils.Crop
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         bindViews(view);
 
-        Tools.RenderersList renderersList = Tools.getCompatibleRenderers(view.getContext());
+        RendererCompatUtil.RenderersList renderersList = RendererCompatUtil.getCompatibleRenderers(view.getContext());
         mRenderNames = renderersList.rendererIds;
         List<String> renderList = new ArrayList<>(renderersList.rendererDisplayNames.length + 1);
         renderList.addAll(Arrays.asList(renderersList.rendererDisplayNames));
