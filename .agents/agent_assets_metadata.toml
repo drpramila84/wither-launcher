@@ -18,6 +18,12 @@ uri = "file://attached_assets/wither_launcher_circle_logo.png"
 type = "image"
 title = "wither launcher circle badge logo"
 
+[[generated]]
+id = "khYVdaPHRbfGJCI6WstQ2"
+uri = "file://attached_assets/wither_launcher_purple_logo.png"
+type = "image"
+title = "wither launcher purple glow logo"
+
 [[outputs]]
 id = "P0M6eJwf180dm7hNl9ExB"
 uri = "file://attached_assets/wither_launcher_icon.png"
@@ -35,3 +41,9 @@ id = "yh2fZYhuK4-bmbevFrdWK"
 uri = "file://attached_assets/wither_launcher_circle_logo.png"
 type = "image"
 title = "Wither Launcher Circle Logo"
+
+[[outputs]]
+id = "LC17zfTPKsoJgoHcRcizE"
+uri = "file://attached_assets/wither_launcher_purple_logo.png"
+type = "image"
+title = "Wither Launcher - Purple Glow Logo"
