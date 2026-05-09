@@ -6,8 +6,20 @@ uri = "file://attached_assets/wither_launcher_icon.png"
 type = "image"
 title = "wither launcher icon"
 
+[[generated]]
+id = "b1T9Q9IZU9cUNvLnaRlvh"
+uri = "file://attached_assets/wither_launcher_logo.png"
+type = "image"
+title = "wither launcher logo with name"
+
 [[outputs]]
 id = "P0M6eJwf180dm7hNl9ExB"
 uri = "file://attached_assets/wither_launcher_icon.png"
 type = "image"
 title = "Wither Launcher App Icon"
+
+[[outputs]]
+id = "rVZvfxC1eVZVL9H5jVZsT"
+uri = "file://attached_assets/wither_launcher_logo.png"
+type = "image"
+title = "Wither Launcher Logo"
