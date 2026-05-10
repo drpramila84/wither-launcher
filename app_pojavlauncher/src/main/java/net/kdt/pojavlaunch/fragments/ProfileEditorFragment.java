@@ -264,6 +264,11 @@ public class ProfileEditorFragment extends Fragment implements CropperUtils.Crop
     }
 
     @Override
+    public float getAspectRatio() {
+        return 1.0f;
+    }
+
+    @Override
     public int getTargetMaxSide() {
         return 128;
     }
