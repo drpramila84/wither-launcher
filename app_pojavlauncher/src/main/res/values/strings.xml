@@ -93,7 +93,7 @@
 
     <!-- MainActivity: strings -->
     <string name="mcn_exit_title">Application/Game exited with code %d, check latestlog.txt for more details.</string>
-    <string name="mcn_abort_title">Application/Game aborted, check latestlog.txt for more information</string>
+    <string name="mcn_abort_title">Application/Game crashed. If you are using a version newer than 1.20.4 without LTW support, try switching to an older Minecraft version. Check latestlog.txt for details.</string>
     <string name="mcn_exit_confirm">Are you sure want to force close?</string>
     <string name="mcn_check_fail_vulkan_support">Zink (Vulkan) renderer is not supported on this device!</string>
 
@@ -441,7 +441,7 @@
     <string name="newdl_extracting_native_libraries">Extracting native libraries (%d/%d)</string>
     <string name="compat_version_not_supported">Your device cannot run this version because LTW is not supported on your device.</string>
     <string name="compat_sodium_not_supported">Your device cannot run Sodium on this version because LTW is not supported on your device.</string>
-    <string name="compat_ltw_fallback_warning">LTW renderer is not supported on your device. The game will launch using GL4ES instead, which may cause graphical issues on this version.</string>
+    <string name="compat_ltw_fallback_warning">LTW renderer is not supported on your device. The game will launch using GL4ES instead. This version may crash or have severe graphical issues with GL4ES — try an older Minecraft version (1.20.4 or below) for best compatibility.</string>
     <string name="oauth_unknown_error">Unknown authentication error</string>
     <string name="oauth_web_complete">Authenticating…</string>
     <string name="auth_select_microsoft">Microsoft account</string>
