@@ -168,8 +168,18 @@ public class GameRunner {
         File gamedir = instance.getGameDirectory();
         JMinecraftVersionList.Version versionInfo = Tools.getVersionInfo(versionId);
 
+        // Resolve the true base Minecraft version for renderer compatibility checks.
+        // When using modded profiles (Fabric, Forge, Quilt), getVersionInfo merges the
+        // profile into the base version but overwrites the base version's id/releaseTime
+        // with the loader's values. Reading the raw profile (skipInheriting=true) lets us
+        // find inheritsFrom, then we read that vanilla JSON directly for accurate dates.
+        JMinecraftVersionList.Version rawProfile = Tools.getVersionInfo(versionId, true);
+        String baseVersionId = (rawProfile.inheritsFrom != null && !rawProfile.inheritsFrom.isEmpty())
+                ? rawProfile.inheritsFrom : versionId;
+        JMinecraftVersionList.Version baseVersionInfo = Tools.getVersionInfo(baseVersionId, true);
+
         // Switch renderer to GL4ES when running a compat context version on LTW
-        if(isCompatContext(versionInfo) && !hasAngelica(gamedir) && rendererName.equals("opengles3_ltw")) {
+        if(isCompatContext(baseVersionInfo) && !hasAngelica(gamedir) && rendererName.equals("opengles3_ltw")) {
             instance.renderer = rendererName = "opengles2";
             instance.write();
         }
@@ -177,12 +187,12 @@ public class GameRunner {
         boolean isGl4es = rendererName.equals("opengles2");
         boolean ltwSupported = RendererCompatUtil.getCompatibleRenderers(activity).rendererIds.contains("opengles3_ltw");
         // Block Sodium from running with GL4ES on 1.17+
-        if(!isCompatContext(versionInfo) && isGl4es && hasSodium(gamedir)) {
+        if(!isCompatContext(baseVersionInfo) && isGl4es && hasSodium(gamedir)) {
             rendererName = switchLtw(ltwSupported, instance, activity, R.string.compat_sodium_not_supported);
         }
 
-        // Switch renderer to LTW when running 1.21.5
-        if(!isGl4esCompatible(versionInfo) && isGl4es) {
+        // Switch renderer to LTW when running 1.21.5+
+        if(!isGl4esCompatible(baseVersionInfo) && isGl4es) {
             rendererName = switchLtw(ltwSupported, instance, activity, R.string.compat_version_not_supported);
         }
         RendererCompatUtil.releaseRenderersCache();
