@@ -1,33 +1,8 @@
-name: Android CI
-
-on:
-  push:
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Give Gradle permission
-        run: chmod +x gradlew
-
-      - name: Update language list
-        run: bash scripts/languagelist_updater.sh
-
       - name: Build Debug APK
         run: |
           mkdir -p out
           ./gradlew :app_pojavlauncher:assembleDebug --warning-mode=none
-          mv app_pojavlauncher/build/outputs/apk/debug/app_pojavlauncher-debug.apk out/wither-launcher.apk
+          find app_pojavlauncher/build/outputs/apk -name "*.apk" | head -1 | xargs -I{} mv {} out/wither-launcher.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
