@@ -123,17 +123,20 @@ public class GameRunner {
         return LifecycleAwareAlertDialog.haltOnDialog(activity.getLifecycle(), activity, dialogCreator);
     }
 
-    // Autoswitch to LTW if supported, otherwise - crash with resId dialog message. Returns LTW renderer strings if succeeded
+    // Autoswitch to LTW if supported, otherwise - fall back to GL4ES with a warning
     private static String switchLtw(boolean hasLtw, Instance instance, AppCompatActivity activity, int resId) throws InterruptedException, IOException {
         if(hasLtw) {
             String ltwRenderer = "opengles3_ltw";
             instance.renderer = ltwRenderer;
             instance.write();
             return ltwRenderer;
-        }else {
-            showDialog(activity, resId);
-            System.exit(0);
-            return null;
+        } else {
+            // LTW not available - fall back to GL4ES instead of blocking launch
+            String fallbackRenderer = "opengles2";
+            instance.renderer = fallbackRenderer;
+            instance.write();
+            showDialog(activity, R.string.compat_ltw_fallback_warning);
+            return fallbackRenderer;
         }
     }
 

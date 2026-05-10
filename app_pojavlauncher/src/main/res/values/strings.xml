@@ -441,6 +441,7 @@
     <string name="newdl_extracting_native_libraries">Extracting native libraries (%d/%d)</string>
     <string name="compat_version_not_supported">Your device cannot run this version because LTW is not supported on your device.</string>
     <string name="compat_sodium_not_supported">Your device cannot run Sodium on this version because LTW is not supported on your device.</string>
+    <string name="compat_ltw_fallback_warning">LTW renderer is not supported on your device. The game will launch using GL4ES instead, which may cause graphical issues on this version.</string>
     <string name="oauth_unknown_error">Unknown authentication error</string>
     <string name="oauth_web_complete">Authenticating…</string>
     <string name="auth_select_microsoft">Microsoft account</string>
