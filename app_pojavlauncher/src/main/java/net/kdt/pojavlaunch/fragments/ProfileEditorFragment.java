@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ProfileEditorFragment extends Fragment implements CropperUtils.CropperListener{
+public class ProfileEditorFragment extends Fragment implements CropperUtils.CropperReceiver{
     public static final String TAG = "ProfileEditorFragment";
     public static final String DELETED_PROFILE = "deleted_profile";
 
@@ -125,7 +125,7 @@ public class ProfileEditorFragment extends Fragment implements CropperUtils.Crop
         // Set up the icon change click listener
         mProfileIcon.setOnClickListener(v -> CropperUtils.startCropper(mCropperLauncher));
 
-        loadValues(LauncherPreferences.DEFAULT_PREF.getString(LauncherPreferences.PREF_KEY_CURRENT_PROFILE, ""), view.getContext());
+        loadValues(LauncherPreferences.DEFAULT_PREF.getString(LauncherPreferences.PREF_KEY_CURRENT_INSTANCE, ""), view.getContext());
     }
 
     private View.OnClickListener getGameDirListener() {
@@ -173,7 +173,7 @@ public class ProfileEditorFragment extends Fragment implements CropperUtils.Crop
         List<Runtime> runtimes = MultiRTUtils.getRuntimes();
         int jvmIndex = runtimes.indexOf(new Runtime("<Default>"));
         if (mTempProfile.javaDir != null) {
-            String selectedRuntime = mTempProfile.javaDir.substring(Tools.LAUNCHERPROFILES_RTPREFIX.length());
+            String selectedRuntime = mTempProfile.javaDir.substring((Tools.MULTIRT_HOME + "/").length());
             int nindex = runtimes.indexOf(new Runtime(selectedRuntime));
             if (nindex != -1) jvmIndex = nindex;
         }
@@ -252,7 +252,7 @@ public class ProfileEditorFragment extends Fragment implements CropperUtils.Crop
 
         Runtime selectedRuntime = (Runtime) mDefaultRuntime.getSelectedItem();
         mTempProfile.javaDir = (selectedRuntime.name.equals("<Default>") || selectedRuntime.versionString == null)
-                ? null : Tools.LAUNCHERPROFILES_RTPREFIX + selectedRuntime.name;
+                ? null : (Tools.MULTIRT_HOME + "/") + selectedRuntime.name;
 
         if(mDefaultRenderer.getSelectedItemPosition() == mRenderNames.size()) mTempProfile.pojavRendererName = null;
         else mTempProfile.pojavRendererName = mRenderNames.get(mDefaultRenderer.getSelectedItemPosition());

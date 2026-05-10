@@ -108,7 +108,7 @@ public class MicrosoftBackgroundLogin {
                 if(errorListener != null)
                     Tools.runOnUiThread(() -> errorListener.onLoginError(e));
             }
-            ProgressLayout.clearProgress(ProgressLayout.AUTHENTICATE_MICROSOFT);
+            ProgressLayout.clearProgress(ProgressLayout.AUTHENTICATE);
         });
     }
 
@@ -308,7 +308,7 @@ public class MicrosoftBackgroundLogin {
         if(listener != null){
             Tools.runOnUiThread(() -> listener.onLoginProgress(step));
         }
-        ProgressLayout.setProgress(ProgressLayout.AUTHENTICATE_MICROSOFT, step*20);
+        ProgressLayout.setProgress(ProgressLayout.AUTHENTICATE, step*20);
     }
 
 
