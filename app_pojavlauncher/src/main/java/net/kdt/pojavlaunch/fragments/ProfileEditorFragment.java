@@ -264,6 +264,11 @@ public class ProfileEditorFragment extends Fragment implements CropperUtils.Crop
     }
 
     @Override
+    public int getTargetMaxSide() {
+        return 128;
+    }
+
+    @Override
     public void onCropped(Bitmap contentBitmap) {
         mProfileIcon.setImageBitmap(contentBitmap);
         Log.i("bitmap", "w="+contentBitmap.getWidth() +" h="+contentBitmap.getHeight());

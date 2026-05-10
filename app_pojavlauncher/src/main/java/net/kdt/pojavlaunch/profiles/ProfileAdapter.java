@@ -113,7 +113,7 @@ public class ProfileAdapter extends BaseAdapter {
 
         // Set selected background if needed
         if(displaySelection){
-            String selectedProfile = LauncherPreferences.DEFAULT_PREF.getString(LauncherPreferences.PREF_KEY_CURRENT_PROFILE,"");
+            String selectedProfile = LauncherPreferences.DEFAULT_PREF.getString(LauncherPreferences.PREF_KEY_CURRENT_INSTANCE,"");
             extendedTextView.setBackgroundColor(selectedProfile.equals(nm) ? ColorUtils.setAlphaComponent(Color.WHITE,60) : Color.TRANSPARENT);
         }else extendedTextView.setBackgroundColor(Color.TRANSPARENT);
     }

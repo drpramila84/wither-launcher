@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class LauncherProfiles {
     public static MinecraftLauncherProfiles mainProfileJson;
-    private static final File launcherProfilesFile = new File(Tools.GAME_PROFILES_FILE);
+    private static final File launcherProfilesFile = new File(Tools.DIR_GAME_NEW + "/launcher_profiles.json");
 
     /** Reload the profile from the file, creating a default one if necessary */
     public static void load(){
@@ -54,7 +54,7 @@ public class LauncherProfiles {
 
     public static @NonNull MinecraftProfile getCurrentProfile() {
         if(mainProfileJson == null) LauncherProfiles.load();
-        String defaultProfileName = LauncherPreferences.DEFAULT_PREF.getString(LauncherPreferences.PREF_KEY_CURRENT_PROFILE, "");
+        String defaultProfileName = LauncherPreferences.DEFAULT_PREF.getString(LauncherPreferences.PREF_KEY_CURRENT_INSTANCE, "");
         MinecraftProfile profile = mainProfileJson.profiles.get(defaultProfileName);
         if(profile == null) throw new RuntimeException("The current profile stopped existing :(");
         return profile;
